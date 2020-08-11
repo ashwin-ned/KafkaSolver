@@ -34,41 +34,49 @@ def sld_data():
             sld_schema = list(map(int, sld_schema))
 
             S = sum(sld_schema)
-
             if len(sld_schema) != 45:       # 45 as it was the max len of sld_schema
                 zeros = 45 - len(sld_schema)
                 for i in range(zeros):
                     sld_schema.append(0)
             print(sld_schema)
 
+def recurse_position(x_pos, y_pos, cable_id, sld_len):
+
+    if output_matrix[y_pos-1][x_pos-1] == 0:
+        output_matrix[y_pos-1][x_pos-1] = cable_id + "-" + sld_len
+        return
+    else:
+        y_pos += 1
+        recurse_position(x_pos, y_pos, cable_id, sld_len)
+
 def make_matrix(sld_matrix):
     """len(sld_array) ---> Y Position"""
-    #x_pos = len(sld_array)
-    #y_pos = sld_array.pop()
+    #x_pos = len(sld_array)  col
+    #y_pos = sld_array.pop() row
 
     for cable in sld_matrix:
         cable_id = cable[0]
         sld_array = cable[1]
+        sld_len = len(sld_array)
 
-        #print(cable_id,sld_array)
+        #CV = sorted(cable, key=itemgetter(1))
+        #CV = cable.sort(key = lambda i:i[1])
 
         x_pos = len(sld_array)
         y_pos = sld_array.pop()
+        #print(CV)
+        #print(cable)
+        #print(cable_id,y_pos,x_pos)
+        recurse_position(x_pos, y_pos, str(cable_id), str(sld_len))
 
-        output_matrix[x_pos][y_pos] = cable_id
+        #print(cable_id,y_pos,x_pos)
 
+def print_sld_matrix(array):
 
-
-def matrix_sort(array):
-
-    #array.sort(key=lambda item: (-len(item), item), reverse = True)
-    #sorted(array,key=lambda x:(-x[1],x[0]))
-    array.sort(key=itemgetter(1))
-    for val in array:
-        l = len(val[1])
-        print(val, l)
-        #sorted(val, key = l)
-
+    for Ar in array:
+        #Ar = list(map(int, Ar))
+        #if sum(Ar) != 0:
+        print(Ar)
 
 def extract_sld():
         sld = list()
@@ -100,8 +108,12 @@ def extract_sld():
             for i in range(len(cable_id)):
                 sld_matrix.append([cable_id[i],matrix[i]])
 
-            #matrix_sort(sld_matrix)
+            sld_matrix.sort(key = lambda x: len(x[1]))
+            #sld_matrix = sorted(sld_matrix, key= lambda x : len(sld_matrix[1]))
             #print(sld_matrix)
+            #matrix_sort(sld_matrix)
+            #for sld in sld_matrix:
+                #print(sld)
             make_matrix(sld_matrix)
 
             #matrix.sort(key=lambda item: (-len(item), item), reverse = True)
@@ -120,3 +132,5 @@ if __name__ == "__main__":
     #sld_data()
     extract_sld()
     #print(np.matrix(output_matrix))
+    #print(output_matrix)
+    print_sld_matrix(output_matrix)
